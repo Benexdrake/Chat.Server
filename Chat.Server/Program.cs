@@ -26,46 +26,21 @@ app.UseHttpsRedirection();
 app.MapHub<ChatHub>("chat-hub");
 
 
-app.MapGet("users", (ChatDbContext context) =>
-{
-	return context.Users.ToList();
-}).WithDescription("Get all Users from DB");
+app.MapGet("users", (ChatDbContext context) => context.Users.ToList());
 
-app.MapGet("userByName", (ChatDbContext context, string username) =>
-{
-	return context.Users.Where(x => x.Name.Contains(username)).FirstOrDefault();
-}).WithDescription("Get a User by Name from DB");
+app.MapGet("userByName", (ChatDbContext context, string username) => context.Users.Where(x => x.Name.Contains(username)).FirstOrDefault());
 
-app.MapGet("userById", (ChatDbContext context, ulong userid) =>
-{
-	return context.Users.Where(x => x.Id == userid).FirstOrDefault();
-}).WithDescription("Get a User by Id from DB");
+app.MapGet("userById", (ChatDbContext context, ulong userid) => context.Users.Where(x => x.Id == userid).FirstOrDefault());
 
-app.MapGet("messages", (ChatDbContext context, string searchParams) =>
-{
-	return context.Messages.Where(x => x.Content.Contains(searchParams));
-}).WithDescription("Get all Messages from DB");
+app.MapGet("messages", (ChatDbContext context, string searchParams) => context.Messages.Where(x => x.Content.Contains(searchParams)));
 
-app.MapGet("messagesByCount", (ChatDbContext context, int start, int end) =>
-{
-	var messages = context.Messages.ToList();
-	return messages.GetRange(start, end);
-}).WithDescription("Get all Messages from DB");
+app.MapGet("messagesByCount", (ChatDbContext context, int start, int end) => context.Messages.ToList().GetRange(start, end));
 
-app.MapGet("message", (ChatDbContext context, ulong messageId) =>
-{
-	return context.Messages.Where(x => x.Id == messageId);
-}).WithDescription("Get a Messages from DB");
+app.MapGet("message", (ChatDbContext context, ulong messageId) => context.Messages.Where(x => x.Id == messageId));
 
-app.MapGet("messagesByDate", (ChatDbContext context, DateTime date) =>
-{
-	return context.Messages.Where(x => x.Date == date);
-}).WithDescription("Get all Messages with specific Date from DB");
+app.MapGet("messagesByDate", (ChatDbContext context, DateTime date) => context.Messages.Where(x => x.Date == date));
 
-app.MapGet("messagesByUserId", (ChatDbContext context, ulong userId) =>
-{
-	return context.Messages.Where(x => x.UserId == userId);
-}).WithDescription("Get all Messages from User X by Id from DB");
+app.MapGet("messagesByUserId", (ChatDbContext context, ulong userId) => context.Messages.Where(x => x.UserId == userId));
 
 
 app.Run();
