@@ -1,4 +1,5 @@
 using Chat.Server.Data;
+using Chat.Server.Hubs;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,8 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddDbContext<ChatDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("Chat")));
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -20,6 +22,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapHub<ChatHub>("chat-hub");
 
 
 app.MapGet("users", (ChatDbContext context) =>
@@ -40,6 +44,12 @@ app.MapGet("userById", (ChatDbContext context, ulong userid) =>
 app.MapGet("messages", (ChatDbContext context, string searchParams) =>
 {
 	return context.Messages.Where(x => x.Content.Contains(searchParams));
+}).WithDescription("Get all Messages from DB");
+
+app.MapGet("messagesByCount", (ChatDbContext context, int start, int end) =>
+{
+	var messages = context.Messages.ToList();
+	return messages.GetRange(start, end);
 }).WithDescription("Get all Messages from DB");
 
 app.MapGet("message", (ChatDbContext context, ulong messageId) =>
