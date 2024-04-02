@@ -5,6 +5,6 @@ namespace Chat.Server.Hubs
 	public interface IChatHub
 	{
 		Task ReceiveMessage(Message message);
-		Task ReceiveStatus(bool status);
+		Task ReceiveStatus(ulong userId,bool status);
 	}
 }

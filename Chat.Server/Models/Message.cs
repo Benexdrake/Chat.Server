@@ -3,17 +3,18 @@
 	public class Message
 	{
 		private ulong _id;
-		private ulong _userId;
+		private string _userId;
 		private string _content;
-		private DateTime _date;
+		private string _date;
 
         public Message()
         {
             _content = string.Empty;
-			_date = DateTime.MinValue;
+			_date = string.Empty;
+			UserId = string.Empty;
         }
 
-		public Message(ulong id, ulong userId, string content, DateTime date)
+		public Message(ulong id, string userId, string content, string date)
 		{
 			_id = id;
 			_userId = userId;
@@ -22,8 +23,8 @@
 		}
 
 		public ulong Id { get => _id; set => _id = value; }
-		public ulong UserId { get => _userId; set => _userId = value; }
+		public string UserId { get => _userId; set => _userId = value; }
 		public string Content { get => _content; set => _content = value; }
-		public DateTime Date { get => _date; set => _date = value; }
+		public string Date { get => _date; set => _date = value; }
 	}
 }

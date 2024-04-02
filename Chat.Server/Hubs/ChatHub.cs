@@ -12,20 +12,36 @@ namespace Chat.Server.Hubs
         {
 			_context = context;
 		}
-        public override async Task OnConnectedAsync()
+		public override async Task OnConnectedAsync()
 		{
-			await Clients.All.ReceiveStatus(true);
+			//var user = _context.Users.Where(x => x.ClientId.Equals(Context.ConnectionId)).FirstOrDefault();
+			//await Groups.AddToGroupAsync(Context.ConnectionId, "status");
+			//await Clients.Group("status").ReceiveStatus(user.Id, true);
 		}
 
 		public override async Task OnDisconnectedAsync(Exception? exception)
 		{
-			await Clients.All.ReceiveStatus(false);
+			//var user = _context.Users.Where(x => x.ClientId.Equals(Context.ConnectionId)).FirstOrDefault();
+			//await Clients.Group("status").ReceiveStatus(user.Id, false);
 		}
 
 		public async Task SendMessage(Message message)
 		{
 			_context.Messages.Add(message);
+			_context.SaveChanges();
 			await Clients.All.ReceiveMessage(message);
+		}
+
+		//public async Task SendMessage(string message)
+		//{
+		//	var id = message.id;
+		//	await Console.Out.WriteLineAsync(id);
+		//	await Console.Out.WriteLineAsync();
+		//}
+
+		public async Task SendStatus(ulong userId, bool isOnline)
+		{
+			await Clients.Group("onlineStatus").ReceiveStatus(userId, isOnline);
 		}
 
 	}
