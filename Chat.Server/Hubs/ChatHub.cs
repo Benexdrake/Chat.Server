@@ -14,22 +14,68 @@ namespace Chat.Server.Hubs
 		}
 		public override async Task OnConnectedAsync()
 		{
-			//var user = _context.Users.Where(x => x.ClientId.Equals(Context.ConnectionId)).FirstOrDefault();
-			//await Groups.AddToGroupAsync(Context.ConnectionId, "status");
-			//await Clients.Group("status").ReceiveStatus(user.Id, true);
+			await Console.Out.WriteLineAsync();
+			//var user = _context.Users.FirstOrDefault(x => x.ConnectionId.Equals(Context.ConnectionId));
+			//if (user != null)
+			//{
+			//	var avatar = "./avatar.jpg";
+			//	if (user.Avatar != "")
+			//		avatar = $"https://cdn.discordapp.com/avatars/{user.Id}/{user.Avatar}.webp";
+
+
+			//	var m = new
+			//	{
+			//		content = "joined Chat",
+			//		date = "",
+			//		avatarUrl = avatar,
+			//		username = user.Name
+			//	};
+			//	await Clients.All.ReceiveMessage(m);
+			//}
 		}
 
 		public override async Task OnDisconnectedAsync(Exception? exception)
 		{
-			//var user = _context.Users.Where(x => x.ClientId.Equals(Context.ConnectionId)).FirstOrDefault();
-			//await Clients.Group("status").ReceiveStatus(user.Id, false);
+			//var user = _context.Users.FirstOrDefault(x => x.ConnectionId.Equals(Context.ConnectionId));
+			//if (user != null)
+			//{
+			//	var avatar = "./avatar.jpg";
+			//	if (user.Avatar != "")
+			//		avatar = $"https://cdn.discordapp.com/avatars/{user.Id}/{user.Avatar}.webp";
+
+
+			//	var m = new
+			//	{
+			//		content = "Exit Chat",
+			//		date = "",
+			//		avatarUrl = avatar,
+			//		username = user.Name
+			//	};
+			//	await Clients.All.ReceiveMessage(m);
+			//}
 		}
 
 		public async Task SendMessage(Message message)
 		{
 			_context.Messages.Add(message);
 			_context.SaveChanges();
-			await Clients.All.ReceiveMessage(message);
+
+			var user = _context.Users.FirstOrDefault(x => x.Id == message.UserId);
+			if (user != null)
+			{
+				var avatar = "./avatar.jpg";
+				if (user.Avatar != "")
+					avatar = $"https://cdn.discordapp.com/avatars/{user.Id}/{user.Avatar}.webp";
+				
+
+				var m = new {
+					content= message.Content,
+					date= message.Date,
+					avatarUrl= avatar,
+					username=user.Name
+				};
+				await Clients.All.ReceiveMessage(m);
+			}
 		}
 
 		//public async Task SendMessage(string message)

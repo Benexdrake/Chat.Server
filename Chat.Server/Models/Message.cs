@@ -7,7 +7,7 @@
 		private string _content;
 		private string _date;
 
-        public Message()
+		public Message()
         {
             _content = string.Empty;
 			_date = string.Empty;

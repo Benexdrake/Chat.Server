@@ -1,5 +1,7 @@
 using Chat.Server.Data;
 using Chat.Server.Hubs;
+using Chat.Server.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +57,22 @@ app.MapGet("message", (ChatDbContext context, ulong messageId) => context.Messag
 app.MapGet("messagesByDate", (ChatDbContext context, string date) => context.Messages.Where(x => x.Date.Equals(date)));
 
 app.MapGet("messagesByUserId", (ChatDbContext context, string userId) => context.Messages.Where(x => x.UserId.Equals(userId)));
+
+app.MapPost("insertUser", (ChatDbContext context, User user) =>
+{
+	var userDb = context.Users.Where(x => x.Id == user.Id).FirstOrDefault();
+	if (userDb != null)
+		context.Users.Remove(userDb);
+	try
+	{
+		context.Users.Add(user);
+		context.SaveChanges();
+	}
+	catch (Exception e)
+	{
+		Console.WriteLine(e.Message);
+	}
+});
 
 
 app.Run();
